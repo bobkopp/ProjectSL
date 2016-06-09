@@ -1,0 +1,16 @@
+CoastlineClusters,CL1,CL2,Excludes
+ArcticEur1,010,025,,,,,,,
+ArcticEur2,040,060,,,,,,,
+Antarctica,999,999,,,,,,,
+USWest,822,830,,,,,,,
+GulfMex,900,941,,,,,,,
+NAEast,950,970,447,126,144,201,951,192
+CanEast,970,970,,,,,,
+LatAm,830,902,,,,,,,
+NAArctW,820,822,,,,,,,
+Oceana,660,810,,,,,,,
+Japan,640,648,,,,,,,
+Asia,500,630,,,,,,,
+MediAfr,200,499,,,,,,,
+NorEur,080,190,,,,,,,
+Russia,030,030,,,,,,,
