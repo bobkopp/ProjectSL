@@ -2,7 +2,7 @@ function [LWSsamps,GWDsamps,damsamps,thetdam0,mGWD,stdGWD,mGWDs,hp]=SampleLandWa
 
 % [LWSsamps,GWDsamps,damsamps]=SampleLandWaterStorage([Nsamps],[yrs],[pophistfile],[popscenfile],[damfile],[GWDfiles],[doplot])
 %
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Fri May 23 08:13:36 EDT 2014
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Jun 09 16:44:29 EDT 2016
 
 defval('dotriangular',0);
 defval('doplot',0);
@@ -120,6 +120,12 @@ if max(popscenyr)==2100
         popscen=[popscen ;  bsxfun(@times,popscen(end,:),bsxfun(@power,popscengrowth(ii,:),[1:25]'))];
     end
 end
+
+if max(yrs)>max(popscenyr)
+    popscenyr(end+1)=max(yrs);
+    popscen(end+1,:)=popscen(end,:);
+end
+
 
 popdraw = @(x) interp1(popscenids,popscen',x)';
 if ~dotriangular
