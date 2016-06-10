@@ -1,4 +1,4 @@
-# ProjectSL v2.1
+# ProjectSL
 
 README file last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Jun 09 13:01:02 EDT 2016
 
