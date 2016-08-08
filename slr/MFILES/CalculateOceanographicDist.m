@@ -1,6 +1,6 @@
 function [ThermExpMean,ThermExpStd,ThermExpYears,ThermExpN,OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOSTOGA,sZOSTOGA,ZOSTOGAmodels,ZOSTOGAyrs] = CalculateOceanographicDist(scens,datayears,targregions,sitecoords,mergeZOSZOSTOGA,IFILES,PARAMDIR)
 
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Jun 09 16:14:28 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Mon Aug 08 18:24:20 EDT 2016
 
 defval('mergeZOSZOSTOGA',1);
 defval('ZOSpullregion',12); % New York
@@ -12,8 +12,8 @@ defval('SLRDIR','SLR_ALL');
 
 disp('Thermal Expansion...');
 for kk=1:length(scens)
-	disp(['   ' scens{kk}]);
-	[ThermExpMean(:,kk),ThermExpStd(:,kk),ThermExpYears,ThermExpN(:,kk),ZOSTOGA{kk},sZOSTOGA{kk},CWdrift,histGICrate,ZOSTOGAmodels{kk},ZOSTOGAyrs{kk}]=readZOSTOGA(scens{kk},[],[],datayears,1,{'zostoga','zosga'},IFILES,PARAMDIR);
+    disp(['   ' scens{kk}]);
+    [ThermExpMean(:,kk),ThermExpStd(:,kk),ThermExpYears,ThermExpN(:,kk),ZOSTOGA{kk},sZOSTOGA{kk},CWdrift,histGICrate,ZOSTOGAmodels{kk},ZOSTOGAyrs{kk}]=readZOSTOGA(scens{kk},[],[],datayears,1,{'zostoga','zosga'},IFILES,PARAMDIR);
 end
 
 %% Dynamics
@@ -35,7 +35,5 @@ if nargout>4
 
  [OceanDynMean(:,:,kk),OceanDynStd(:,:,kk),OceanDynYears,OceanDynRegions,OceanDynN(:,:,kk),OceanDynTECorr(:,:,kk)]=readZOS(scens{kk},targregions(sub),sitecoords(sub,:),19,datayears,0,doZSGAmodels,doZSGA,doZSGAyrs,mergeZOSZOSTOGA,fullfile(IFILES,SLRDIR));
 
- %	sub2=find(targregions==ZOSpullregion); % pull out ZOS for NYC
- %	[~,~,~,~,~,~,ZOS{kk},~,ZOSmodels{kk}] = readZOS(scens{kk},targregions(sub2),sitecoords(sub2,:),19,datayears,0,doZSGAmodels,doZSGA,doZSGAyrs);
     end
 end
