@@ -1,4 +1,4 @@
-function [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOS,sZOS,modellist]=readZOS(scen,targregions,sitecoords,smoothwin,years,extrap,ZOSTOGAmodels,ZOSTOGA,ZOSTOGAyears,mergeZOSZOSTOGA,subdir)
+function [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOS,sZOS,modellist]=readZOS(scen,targregions,sitecoords,smoothwin,years,extrap,ZOSTOGAmodels,ZOSTOGA,ZOSTOGAyears,mergeZOSZOSTOGA,subdir,filemode)
 
 % [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOS,sZOS,modellist]=readZOS(scen,targregions,sitecoords,smoothwin,years,extrap,ZOSTOGAmodels,ZOSTOGA,ZOSTOGAyears,mergeZOSZOSTOGA,subdir)
 %
@@ -17,6 +17,7 @@ function [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,Ocean
 % ZOSTOGAyears: years for ZOSTOGA
 % mergeZOSZOSTOGA: add ZOSTOGA to ZOS? (default = 0, meaning no)
 % subdir: path containing ZOS files
+% filemode: use Kopp et al. (2014)-style text files (0) or GISS-processed regridded mat files (1)
 %
 % OUTPUTS
 % -------
@@ -44,7 +45,14 @@ defval('ZOSTOGA',[]);
 defval('ZOSTOGAmodels',{});
 defval('ZOSTOGAyears',[]);
 defval('mergeZOSZOSTOGA',0);
+defval('filemode',0);
 
-[ZOSraw,ZOSmodels,scen,targregions,years]=readZOStgtxt(scen,targregions,years,subdir);
+if filemode==0
+    [ZOSraw,ZOSmodels,scen,targregions,years]=readZOStgtxt(scen,targregions,years,subdir);
+elseif filemode==1
+    disp(['filemode 1 in ' subdir]);
+    [ZOSraw,ZOSmodels,scen,~,years]=dab_slrgridextract(scen,sitecoords,years,subdir);
+end
+
 [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynN,OceanDynTECorr,ZOS,sZOS,modellist]=processZOS(sitecoords,years,ZOSraw,ZOSmodels,smoothwin,extrap,ZOSTOGAmodels,ZOSTOGA,ZOSTOGAyears,mergeZOSZOSTOGA);
 OceanDynRegions=targregions;

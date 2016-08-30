@@ -1,4 +1,4 @@
-function [ThermExpMean,ThermExpStd,ThermExpYears,ThermExpN,OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOSTOGA,sZOSTOGA,ZOSTOGAmodels,ZOSTOGAyrs] = CalculateOceanographicDist(scens,datayears,targregions,sitecoords,mergeZOSZOSTOGA,IFILES,PARAMDIR)
+function [ThermExpMean,ThermExpStd,ThermExpYears,ThermExpN,OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,OceanDynTECorr,ZOSTOGA,sZOSTOGA,ZOSTOGAmodels,ZOSTOGAyrs] = CalculateOceanographicDist(scens,datayears,targregions,sitecoords,mergeZOSZOSTOGA,IFILES,PARAMDIR,SLRDIR,filemode)
 
 % Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Mon Aug 08 18:24:20 EDT 2016
 
@@ -7,6 +7,7 @@ defval('ZOSpullregion',12); % New York
 defval('IFILES','');
 defval('PARAMDIR','');
 defval('SLRDIR','SLR_ALL');
+defval('filemode',0);
 
 %% Thermal expansion
 
@@ -17,6 +18,11 @@ for kk=1:length(scens)
 end
 
 %% Dynamics
+if (SLRDIR(1)=='/')||(SLRDIR(1)=='~')
+    wSLRDIR=SLRDIR;
+else
+    wSLRDIR=fullfile(IFILES,SLRDIR);
+end
 
 if nargout>4
 
@@ -33,7 +39,7 @@ if nargout>4
 
  sub=1:length(targregions);
 
- [OceanDynMean(:,:,kk),OceanDynStd(:,:,kk),OceanDynYears,OceanDynRegions,OceanDynN(:,:,kk),OceanDynTECorr(:,:,kk)]=readZOS(scens{kk},targregions(sub),sitecoords(sub,:),19,datayears,0,doZSGAmodels,doZSGA,doZSGAyrs,mergeZOSZOSTOGA,fullfile(IFILES,SLRDIR));
+ [OceanDynMean(:,:,kk),OceanDynStd(:,:,kk),OceanDynYears,OceanDynRegions,OceanDynN(:,:,kk),OceanDynTECorr(:,:,kk)]=readZOS(scens{kk},targregions(sub),sitecoords(sub,:),19,datayears,0,doZSGAmodels,doZSGA,doZSGAyrs,mergeZOSZOSTOGA,wSLRDIR,filemode);
 
     end
 end
