@@ -21,13 +21,16 @@ function [ZOS_final, modellist, scen, targsitecoords, years] = readZOSdabgrid(sc
 % ZOS: 3-D ZOS output array (years x models x sites)
 % modellist: cell array of model names
 %
-% writted by Daniel Bader, dab2145-at-columbia-dot-edu, Tue Aug 30 13:24:00 EDT 2016 
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Tue Aug 30 18:32:05 EDT 2016
+% originally written by Daniel Bader, dab2145-at-columbia-dot-edu, Tue Aug 30 13:24:00 EDT 2016 
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Wed Aug 31 08:19:05 EDT 2016
 
 defval('scen','rcp85');
 defval('years',1860:2099);
 defval('targsitecoords',[40 286]);
 defval('subdir','~/NASA/output');
+
+defval('idwN',15);
+defval('idwpwr',3);
 
 angd = @(Lat0,Long0,lat,long) (180/pi)*(atan2( sqrt( (cosd(lat) .* sind(long-Long0)).^2 + (cosd(Lat0) .* sind(lat) - sind(Lat0) .* cosd(lat) .* cosd(long-Long0)).^2),(sind(Lat0) .* sind(lat) + cosd(Lat0) .* cosd(lat) .* cosd(long-Long0))));
 
@@ -67,20 +70,30 @@ jj =1;
 modellist = {};
 
 % identify nearest neighbors
-disp('Finding nearest neighbors...');
-goodsize=2*mean(diff(unique(lons)));
-submatch=ones(size(targsitecoords,1),1)*NaN;
-parfor kk = 1:size(targsitecoords,1)
+% $$$ disp('Finding nearest neighbors...');
+% $$$ goodsize=2*mean(diff(unique(lons)));
+% $$$ submatch=ones(size(targsitecoords,1),1)*NaN;
+% $$$ parfor kk = 1:size(targsitecoords,1)
+% $$$     ad=angd(targsitecoords(kk,1),targsitecoords(kk,2),lats,lons);
+% $$$     [m,mi]=min(ad);
+% $$$     if m<goodsize
+% $$$         submatch(kk)=mi;
+% $$$     end
+% $$$ end
+
+% determine weights
+disp('Determining weights...');
+Mmap = sparse(size(targsitecoords,1),length(lats));
+for kk = 1:size(targsitecoords,1)
     ad=angd(targsitecoords(kk,1),targsitecoords(kk,2),lats,lons);
-    [m,mi]=min(ad);
-    if m<goodsize
-        submatch(kk)=mi;
-    end
+    [s,si]=sort(ad+.005);
+    s=s(1:idwN).^-idwpwr; si=si(1:idwN);
+    Mmap(kk,si)=s;
 end
+
 
 % select years 
 years1 = years - 1859; %all files start 1860 and go to 2099
-
 % load in files 
 for ii = 1:length(files) 
     if files(ii).name(1)~='.' 
@@ -101,12 +114,20 @@ for ii = 1:length(files)
         [doyears,doyearsi,doyearsj]=intersect(years,years_file);
 
         % setup file 
-        zos_file = reshape(dozos.zosv2,[],1,length(years_file)); % changes to year x model x lat-lon
-        zos_file=permute(zos_file,[3 2 1]);
+        zos_file = reshape(dozos.zosv2,[],length(years_file)); % changes to  lat-lon x years
         clear dozos;
         
-        subgood=find(~isnan(submatch));
-        ZOS_final(doyearsi,jj,subgood) = zos_file(doyearsj,1,submatch(subgood));
+        subgood=find(~isnan(zos_file(:,1)));
+        Mmap2=Mmap(:,subgood);
+        v=full(sum(Mmap2,2));
+        v(find(v<1e-3))=NaN;
+        subgood2=find(~isnan(v));
+        Mmap2(subgood2,:)=diag(1./v(subgood2))*Mmap2(subgood2,:);
+        
+        zos_site = Mmap2*zos_file(subgood,:);
+        zos_site=permute(zos_site,[2 3 1]);
+        
+        ZOS_final(doyearsi,jj,:) = zos_site(doyearsj,1,:);
         jj = jj+1; 
     end
 end
