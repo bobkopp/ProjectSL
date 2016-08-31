@@ -22,15 +22,16 @@ function [ZOS_final, modellist, scen, targsitecoords, years] = readZOSdabgrid(sc
 % modellist: cell array of model names
 %
 % originally written by Daniel Bader, dab2145-at-columbia-dot-edu, Tue Aug 30 13:24:00 EDT 2016 
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Wed Aug 31 08:19:05 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Wed Aug 31 09:11:34 EDT 2016
 
 defval('scen','rcp85');
 defval('years',1860:2099);
 defval('targsitecoords',[40 286]);
 defval('subdir','~/NASA/output');
 
-defval('idwN',15);
+defval('idwN',50);
 defval('idwpwr',3);
+defval('idwmindist',.005);
 
 angd = @(Lat0,Long0,lat,long) (180/pi)*(atan2( sqrt( (cosd(lat) .* sind(long-Long0)).^2 + (cosd(Lat0) .* sind(lat) - sind(Lat0) .* cosd(lat) .* cosd(long-Long0)).^2),(sind(Lat0) .* sind(lat) + cosd(Lat0) .* cosd(lat) .* cosd(long-Long0))));
 
@@ -86,11 +87,10 @@ disp('Determining weights...');
 Mmap = sparse(size(targsitecoords,1),length(lats));
 for kk = 1:size(targsitecoords,1)
     ad=angd(targsitecoords(kk,1),targsitecoords(kk,2),lats,lons);
-    [s,si]=sort(ad+.005);
+    [s,si]=sort(max(ad,idwmindist));
     s=s(1:idwN).^-idwpwr; si=si(1:idwN);
     Mmap(kk,si)=s;
 end
-
 
 % select years 
 years1 = years - 1859; %all files start 1860 and go to 2099
