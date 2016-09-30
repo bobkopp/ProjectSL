@@ -31,7 +31,7 @@ function [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynRegions,OceanDynN,Ocean
 % sZOS: smoothed ZOS
 % modellist: models corresponding to columns of ZOS
 %
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Mon Aug 08 18:26:56 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Sep 29 13:29:08 EDT 2016
 
 defval('scen','rcp85');
 defval('smoothwin',19);
@@ -51,7 +51,7 @@ if filemode==0
     [ZOSraw,ZOSmodels,scen,targregions,years]=readZOStgtxt(scen,targregions,years,subdir);
 elseif filemode==1
     disp(['filemode 1 in ' subdir]);
-    [ZOSraw,ZOSmodels,scen,~,years]=dab_slrgridextract(scen,sitecoords,years,subdir);
+    [ZOSraw,ZOSmodels,scen,~,years]=readZOSdabgrid(scen,sitecoords,years,subdir);
 end
 
 [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynN,OceanDynTECorr,ZOS,sZOS,modellist]=processZOS(sitecoords,years,ZOSraw,ZOSmodels,smoothwin,extrap,ZOSTOGAmodels,ZOSTOGA,ZOSTOGAyears,mergeZOSZOSTOGA);

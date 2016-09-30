@@ -55,7 +55,6 @@ Nmodels = 0;
 
 % move to directory with files 
 cd(scen)
-cd('zos') 
 
 % count number of models 
 files = dir('*.mat'); 

@@ -28,7 +28,7 @@ function [OceanDynMean,OceanDynStd,OceanDynYears,OceanDynN,OceanDynTECorr,ZOS,sZ
 % sZOS: smoothed ZOS
 % modellist: models corresponding to columns of ZOS
 %
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Mon Aug 08 18:30:56 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Sep 29 22:28:52 EDT 2016
 
 defval('smoothwin',19); % smoothing window (years)
 defval('sitecoords',zeros(size(ZOSraw,3),2)) % site coordinates (used for error checking)
@@ -109,15 +109,16 @@ for ll=1:size(ZOS,3)
 	if abs(sitecoords(ll,1))>50 % at high latitudes, exclude miroc and giss
 		sub=setdiff(sub,find(strncmp('miroc',modellist,length('miroc')))); 
 		sub=setdiff(sub,find(strncmp('giss',modellist,length('giss')))); 
-	end
+ end
+ sZOSslice=sZOS(:,:,ll);
 	parfor jj=1:size(ZOS,1)
-		sub2=intersect(sub,find(~isnan(sZOS(jj,:,ll))));
-		OceanDynMean(jj,ll) = squeeze(mean(sZOS(jj,sub2,ll),2)*1000);
-		OceanDynStd(jj,ll) = squeeze(std(sZOS(jj,sub2,ll),[],2)*1000);
-		OceanDynN(jj,ll) = sum(~isnan(sZOS(jj,sub2,ll)),2);
+		sub2=intersect(sub,find(~isnan(sZOSslice(jj,:))));
+		OceanDynMean(jj,ll) = squeeze(mean(sZOSslice(jj,sub2),2)*1000);
+		OceanDynStd(jj,ll) = squeeze(std(sZOSslice(jj,sub2),[],2)*1000);
+		OceanDynN(jj,ll) = sum(~isnan(sZOSslice(jj,sub2)),2);
 		
 		if (length(ZOSTOGAmodels)>0) && (length(sub2)>0)
-			OceanDynTECorr(jj,ll) = squeeze(corr(sZOS(jj,sub2,ll)'*1000,sZOSTOGAadj(jj,sub2)'*1000));
+			OceanDynTECorr(jj,ll) = squeeze(corr(sZOSslice(jj,sub2)'*1000,sZOSTOGAadj(jj,sub2)'*1000));
 		end
 
 	end
