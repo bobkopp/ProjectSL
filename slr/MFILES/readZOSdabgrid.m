@@ -22,10 +22,10 @@ function [ZOS_final, modellist, scen, targsitecoords, years] = readZOSdabgrid(sc
 % modellist: cell array of model names
 %
 % originally written by Daniel Bader, dab2145-at-columbia-dot-edu, Tue Aug 30 13:24:00 EDT 2016 
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Wed Aug 31 11:03:17 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Sep 29 22:56:57 EDT 2016
 
 defval('scen','rcp85');
-defval('years',1860:2099);
+defval('years',1860:2300);
 defval('targsitecoords',[40 286]);
 defval('subdir','~/NASA/output');
 
@@ -85,17 +85,24 @@ modellist = {};
 % determine weights
 disp('Determining weights...');
 Mmap = sparse(size(targsitecoords,1),length(lats));
-for kk = 1:size(targsitecoords,1)
+md=idwmindist; idwr=idwradius; idwp=idwpwr;
+parfor kk = 1:size(targsitecoords,1)
+    if mod(kk,100)==0
+        disp(sprintf('    %0.0f/%0.0f',[kk size(targsitecoords,1)]));
+    end
+    v=sparse(1,length(lats));
     ad=angd(targsitecoords(kk,1),targsitecoords(kk,2),lats,lons);
-    [s,si]=sort(max(ad,idwmindist));
-    subidw=find(s<idwradius);
-    s=s(subidw).^-idwpwr; si=si(subidw);
-    Mmap(kk,si)=s;
+    [s,si]=sort(max(ad,md));
+    subidw=find(s<idwr);
+    s=s(subidw).^-idwp; si=si(subidw);
+    v(si)=s;
+    Mmap(kk,:)=v;
 end
+
 
 % select years 
 years1 = years - 1859; %all files start 1860 and go to 2099
-% load in files 
+                       % load in files 
 for ii = 1:length(files) 
     if files(ii).name(1)~='.' 
         
@@ -123,7 +130,9 @@ for ii = 1:length(files)
         v=full(sum(Mmap2,2));
         v(find(v<1e-3))=NaN;
         subgood2=find(~isnan(v));
-        Mmap2(subgood2,:)=diag(1./v(subgood2))*Mmap2(subgood2,:);
+        Mmap2(subgood2,:)=bsxfun(@rdivide,Mmap2(subgood2,:),v(subgood2));
+        subbad2=find(isnan(v));
+        Mmap2(subbad2,:)=NaN;
         
         zos_site = Mmap2*zos_file(subgood,:);
         zos_site=permute(zos_site,[2 3 1]);
