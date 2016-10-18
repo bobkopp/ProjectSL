@@ -1,7 +1,7 @@
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Sep 29 13:25:08 EDT 2016
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Tue Oct 11 14:15:16 EDT 2016
 
 addpath(pwd)
-workdir='workdir-160929';
+workdir='workdir-161011';
 if ~exist(workdir,'dir')
     mkdir(workdir)
 end
@@ -77,5 +77,5 @@ seeds0=seeds;
 
 %%%%
 
-savefilecore='~/tmp/SLRProjections160930GRIDDEDcore';
-save(savefilecore,'OceanDynMean','OceanDynN','OceanDynRegions','OceanDynStd','OceanDynTECorr','OceanDynYears','ThermExpMean','ThermExpStd','ThermExpYears','colAIS','colGIC','colGIS','colLS','colTE','fpsite','mergeZOSZOSTOGA','quantlevs','rateprojs','rateprojssd','samps','scens','seeds','targregionnames','targregions','targyears','nearestTG','targsitecoords');
+savefilecore='~/tmp/SLRProjections161011GRIDDEDcore';
+save(savefilecore,'OceanDynMean','OceanDynN','OceanDynRegions','OceanDynStd','OceanDynTECorr','OceanDynYears','ThermExpMean','ThermExpStd','ThermExpYears','ThermExpN','colAIS','colGIC','colGIS','colLS','colTE','fpsite','mergeZOSZOSTOGA','quantlevs','rateprojs','rateprojssd','samps','scens','seeds','targregionnames','targregions','targyears','nearestTG','targsitecoords');
