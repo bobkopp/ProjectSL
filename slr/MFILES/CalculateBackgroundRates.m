@@ -1,13 +1,14 @@
-function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly)
+function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly,yearrange)
 
-% [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,ROOTDIR,regionalonly)
+% [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,ROOTDIR,[regionalonly],[yearrange])
 %
 % set targcoord to -1 to use tide gauge locations; otherwise provide a list of sites (default will be 1 degree grid)
 %
 % set regionalonly to 1 to drop local component
 % set regionalonly to 2 to not incorporate global sea-level curve
+% set regionalonly to 3 to not mask out global sea level
 %
-% Last updated by  Bob Kopp, robert-dot-kopp-at-rutgers-dot-edu, Wed Feb 12 09:58:36 EST 2014
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Apr 06 11:22:54 EDT 2017
 
 defval('IFILES','IFILES/');
 defval('PARAMDIR','PARAMS/');
@@ -21,6 +22,7 @@ defval('targcoord',[]);
 defval('finescale',[]);
 defval('doregression',1);
 defval('regionalonly',0);
+defval('yearrange',[1900 2005]);
 if length(targcoord)==1
 	doself=(targcoord==-1);
 else
@@ -33,6 +35,7 @@ thetGLR=[];
 
 % initialize
 
+GIAanchoryear=yearrange(2);
 GPSLDefineCovFuncs;
 
 if length(targcoord)==0
@@ -93,7 +96,7 @@ for i=coastlineset
 	
 	% subtract GIA
 	Y0=Y;
-    [Y2{i},GIAproju{i},GIAproj{i}] = SubtractGIAfromTG(Y{i},ICE5Glat,ICE5Glon,ICE5Gin,sitecoords{i},regionsu{i},X1{i},regions{i},GIAanchoryear);
+    [Y2{i},GIAproju{i},GIAproj{i}] = SubtractGIAfromTG(Y{i},ICE5Glat,ICE5Glon,ICE5Gin,sitecoords{i},regionsu{i},X1{i},regions{i},yearrange(2));
 
 	
 end
@@ -148,11 +151,16 @@ if doregression
             priorsd(i)=thetGLR(i,5);
 
             noiseMasks = ones(1,size(thetGLR,2));
-            noiseMasks(1,[1 2 8]) = 0; % no red noise or global
+            if regionalonly ~= 3
+                noiseMasks(1,[1 2 8]) = 0; % no red noise or global
+            elseif regionalonly == 3
+                noiseMasks(1,[2 8])=0; % no red noise
+            end
+            
 
             % subtract GIA model
 
-            testyears = [1900 GIAanchoryear]';
+            testyears = [yearrange]';
             testlat = repmat(sitecoords{i}(:,1)',length(testyears),1);
             testlong = repmat(sitecoords{i}(:,2)',length(testyears),1);
             testX = [testlat(:) testlong(:) repmat(testyears,size(sitecoords{i},1),1)];
@@ -162,7 +170,7 @@ if doregression
             testGIAproj=zeros(size(testX,1),1);
             for ii=1:length(regionsu{i})
                 sub=find(testRegions==regionsu{i}(ii));
-                testGIAproj(sub)=GIAproju{i}(ii).*(testX(sub,3)-GIAanchoryear);
+                testGIAproj(sub)=GIAproju{i}(ii).*(testX(sub,3)-yearrange(2));
             end
     
             clear dx1x1 dx1x2 dx2x2 dt1t1 dt1t2 dt2t2;
