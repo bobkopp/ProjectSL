@@ -1,4 +1,4 @@
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Fri May 23 10:36:41 EDT 2014
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, May 23 2017
 
 mf=mfilename('fullpath'); mfsl=strfind(mf,'/'); mypath=mf(1:mfsl(end)-1);
 addpath(mypath,fullfile(mypath,'../lib/MFILES'),fullfile(mypath,'MFILES'),fullfile(mypath,'MFILES/scripts'));
@@ -14,7 +14,7 @@ savefile='~/tmp/SLRProjections140523';
 savefile2='~/tmp/SLRProjectionsquant140523';
 outputdir='~/SLRprojections140523';
 PARAMDIR=fullfile(mypath,'PARAMS/');
-IFILES=fullfile(mypath,'../IFILES');
+IFILES=fullfile(mypath,'../IFILES/slr');
 
 % ICE SHEETS
 % use Shepherd estimates for last decade (2000-2011), pooling APIS and WAIS
