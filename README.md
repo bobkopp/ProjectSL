@@ -1,6 +1,6 @@
 ProjectSL
 
-README file last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, May 24 2017
+README file last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Oct 9 2017
 
 ## Citation
 
@@ -19,15 +19,13 @@ This code contains two directories, slr and lib. slr contains code for analyzing
 
 This code requires MATLAB to run. It uses the Optimization and Mapping toolkits, though some of the functionality should be available without those toolkits. It also requires one of two routines to invert the spherical harmonics of the sea-level fingerprint files. By default, the code uses ssht (https://astro-informatics.github.io/ssht/index.html), although a slower MATLAB-based routine by Frederik Simons is included and can be used as a fallback. 
 
-The code directory does not include some needed input files, which go in the IFILES directory (specified in configureSLRProjections). These include:
+Needed input files, which go in the IFILES directory (specified in configureSLRProjections). These include:
 
 	* the CSIRO GSL reconstruction,
 	* the ICE5G-VM290 GIA model (NetCDF),
 	* land ice static-equilibrium fingerprints,
 	* Marzeion et al. 2012 glacier and ice cap projections,
 	* PSMSL tide gauge data.
-
-A 91 MB ZIP file containing these input files is available from the authors. 
 
 ## Sea level rise projections
 
