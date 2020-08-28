@@ -1,4 +1,4 @@
-function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly,yearrange)
+function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly,yearrange,psmsldir,gslfile)
 
 % [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,ROOTDIR,[regionalonly],[yearrange])
 %
@@ -8,7 +8,7 @@ function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR
 % set regionalonly to 2 to not incorporate global sea-level curve
 % set regionalonly to 3 to not mask out global sea level
 %
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, Thu Apr 06 11:22:54 EDT 2017
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, 2020-08-28 12:25:31 -0400
 
 defval('IFILES','IFILES/');
 defval('PARAMDIR','PARAMS/');
@@ -61,8 +61,8 @@ coastlineset=unique(coastlineset);
 for i=coastlineset
 	disp(['Loading ' coastlinenames{i} '...']);
 
-    psmsldir=fullfile(IFILES,'rlr_annual');
-    gslfile=fullfile(IFILES,'CSIRO_Recons_gmsl_yr_2011.csv');
+    defval('psmsldir',fullfile(IFILES,'rlr_annual'));
+    defval('gslfile',fullfile(IFILES,'CSIRO_Recons_gmsl_yr_2011.csv'));
 	
     [X1{i},Y{i},dY{i},regions{i},regionsu{i},sitenames{i},sitecoords{i},sitelen{i}]=ReadPSMSLData(coastlines.data(i,1),coastlines.data(i,2),15,psmsldir,gslfile,[],coastlines.data(i,3:end));
 
