@@ -52,3 +52,4 @@ You will need to modify the paths in configureSLRProjections.m to match your sys
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    
