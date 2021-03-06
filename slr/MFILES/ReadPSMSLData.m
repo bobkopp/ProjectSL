@@ -2,7 +2,7 @@ function [X1,Y,dY,regions,regionsu,sitenames,sitecoords,sitelen,sitecoastline]=R
 
 % [X1,Y,dY,regions,regionsu,sitenames,sitecoords,sitelen,sitecoastline]=ReadPSMSLData([cl1],[cl2],[minlen],[psmsldir],[gslfile],[addlsites],[exclusions])
 %
-% Last updated by  Bob Kopp, robert-dot-kopp-at-rutgers-dot-edu, 2021-03-06 15:28:45 -0500
+% Last updated by  Bob Kopp, robert-dot-kopp-at-rutgers-dot-edu, 2021-03-06 15:57:48 -0500
 
 defval('psmsldir','IFILES/slr/rlr_annual');
 defval('gslfile','IFILES/slr/CSIRO_Recons_gmsl_yr_2011.csv')
@@ -23,6 +23,7 @@ regionsu=[];
 sitenames={};
 sitecoords=[];
 sitecoastline=[];
+sitelen=[];
 
 % read in global data
 
