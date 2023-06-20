@@ -1,4 +1,4 @@
-function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly,yearrange,psmsldir,gslfile)
+function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,PARAMDIR,IFILES,regionalonly,yearrange,psmsldir,gslfile,GIAFILE)
 
 % [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR,nearest,finescale]=CalculateBackgroundRates(coastlineset,targcoord,finescale,doregression,ROOTDIR,[regionalonly],[yearrange])
 %
@@ -8,7 +8,7 @@ function [rateprojs,rateprojssd,rateprojs0,targcoord,rateGIAproj,priorsd,thetGLR
 % set regionalonly to 2 to not incorporate global sea-level curve
 % set regionalonly to 3 to not mask out global sea level
 %
-% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, 2020-08-28 12:25:31 -0400
+% Last updated by Robert Kopp, robert-dot-kopp-at-rutgers-dot-edu, 2023-06-20
 
 defval('IFILES','IFILES/');
 defval('PARAMDIR','PARAMS/');
